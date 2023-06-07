@@ -47,3 +47,10 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+#-----------------------------------------
+# Ones I've added myself
+#-----------------------------------------
+
+# The Rproject itself
+splineIPDMA.Rproj

@@ -30,20 +30,20 @@ simulate.one.pat <-
       ranInt.patVal= rnorm(n = 1, mean = 0, sd = sqrt(ranInt.pat))
     } else {ranInt.patVal = 0}
     #- get the matrix of time and linear predictor for the outcome
-    probs <- tibble(
+    probs <- tidyr::tibble(
       timePoint = 1:nTimes,
       timeScale = (1:nTimes)/max(timesTotal),
       linPred = FPeval(FPs = FPs, betas = betas, x = timeScale, int = int1) + ranInt.patVal + ranInt.stuVal
     )
     if (outcomeType == "binary") {
       probs <- probs %>%
-        mutate(transPred = invlogit(linPred) + int2) 
-      simOutcomesTibble = tibble(
+        dplyr::mutate(transPred = arm::invlogit(linPred) + int2) 
+      simOutcomesTibble = tidyr::tibble(
         timePoint = probs$timePoint,
         timeScale = probs$timeScale,
         outcome = rbinom(nrow(probs), 1, probs$transPred)
         )
-      simOutcomes <- simOutcomesTibble %>% pull(outcome)
+      simOutcomes <- simOutcomesTibble %>% dplyr::pull(outcome)
       return(simOutcomes)}}
 
 simulate.one.study <- function(
@@ -58,7 +58,7 @@ simulate.one.study <- function(
     int1 = 0, # Initial prevalence for simple FPs,
     int2 = 0 # Additional term to force initial prevalence for complicated FPs
 ) {
-  simStudy = tibble(
+  simStudy = tidyr::tibble(
     patID = numeric(),
     timePoint = numeric(),
     timeScale = numeric(),
@@ -80,14 +80,14 @@ simulate.one.study <- function(
                                   int2 = int2)
     # simPatMat = matrix(c(1:timesTotal,simOutcome),
     #                    nrow = nTimes)
-    simPatTib = tibble(
+    simPatTib = tidyr::tibble(
       patID = rep(j, nTimes),
       timePoint = 1:nTimes,
       timeScale = (1:nTimes)/max(timesTotal),
       outcome = simOutcome
     )
     simStudy = simStudy %>%
-      add_row(simPatTib)
+      tibble::add_row(simPatTib)
   }
   return(simStudy)
 }
@@ -105,7 +105,7 @@ simulate.ipdma<- function(
     int1 = 0, # Initial prevalence for simple FPs,
     int2 = 0 # Additional term to force initial prevalence for complicated FPs
 ) {
-  simIPDMA = tibble(
+  simIPDMA = tidyr::tibble(
     studyID = numeric(),
     patID = numeric(),
     timePoint = numeric(),
@@ -127,10 +127,10 @@ simulate.ipdma<- function(
     # simPatMat = matrix(c(1:timesTotal,simOutcome),
     #                    nrow = nTimes)
     simIPDMAStudy = simStudy %>%
-      mutate(studyID = j) %>%
+      dplyr::mutate(studyID = j) %>%
       dplyr::select(studyID, patID, everything())
     simIPDMA = simIPDMA %>%
-      add_row(simIPDMAStudy)
+      tibble::add_row(simIPDMAStudy)
   }
   return(simIPDMA)
 }

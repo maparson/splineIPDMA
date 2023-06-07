@@ -54,3 +54,10 @@ rsconnect/
 
 # The Rproject itself
 splineIPDMA.Rproj
+
+# The pregnancy data
+Data/RawData/**
+Data/PregnancyData.csv
+
+# Large datasets
+Data/LargeData/**
